@@ -1,7 +1,8 @@
 #include <stdlib.h>
-#include <stdio.h>
+#include "SnakeRay.h"
 
-int main(int argc, char *argv[]){
-	printf("Hello.\n");
-	return EXIT_SUCCESS;
+int main(int argc, char *argv[])
+{
+    SnakeRay(argc, argv);
+    return EXIT_SUCCESS;
 }
