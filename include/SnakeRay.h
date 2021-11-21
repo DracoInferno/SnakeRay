@@ -1,9 +1,17 @@
 #ifndef SNAKERAY_H
 #define SNAKERAY_H
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <raylib.h>
+#include "RayLibText.h"
+
+#define WINDOW_W 800
+#define WINDOW_H 450
+
 typedef enum GameScreen{
-    LOGO,
     TITLE,
+    MENU,
     GAMEPLAY,
     ENDING
 }GameScreen;
