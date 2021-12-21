@@ -9,14 +9,20 @@
 #define WINDOW_W 800
 #define WINDOW_H 450
 
-typedef enum GameScreen{
+typedef enum GameScreen_st{
     TITLE,
     MENU,
     GAMEPLAY,
     ENDING
-}GameScreen;
+}GameScreen_st;
 
-// Main game loop
+typedef enum Gameplay_st{
+    GAMEPLAY_INIT,
+    GAMEPLAY_PLAY,
+    GAMEPLAY_DEINIT
+}Gameplay_st;
+
+// Main game
 void SnakeRay(int argc, char *argv[]);
 
 #endif //SNAKERAY_H
