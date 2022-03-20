@@ -1,112 +1,70 @@
 #include "SnakeRay.h"
 
+GlobalContext_st g_ctx;
+
 void SnakeRay(int argc, char *argv[])
 {
 	// INITIALIZATION
 	// -----------------------------------------------------------------------------------
 	InitWindow(WINDOW_W, WINDOW_H, "SnakeRay");
-	SetWindowMinSize(WINDOW_W, WINDOW_H);
 	SetWindowState(FLAG_WINDOW_RESIZABLE);
+	SetWindowMinSize(480, 360);
 	SetTargetFPS(60);
-
-	GameScreen_st current_screen = TITLE;
-	Gameplay_st gameplay_state = GAMEPLAY_INIT;
-	bool show_fps = true;
-	Font font = GetFontDefault();
-	const char *title_text = "Welcome to SnakeRay, a snake game using c RayLib.\nPress ENTER or click.";
-	int title_text_font_size = 20;
-	int title_text_spacing = 5;
-	Vector2 title_text_pos = TextPosCenter(&font,title_text, title_text_font_size, title_text_spacing, WINDOW_W, WINDOW_H);
+    g_ctx.current_screen = NONE;
+    g_ctx.next_screen = TITLE;
+	g_ctx.gameplay_state = GAMEPLAY_INIT;
+	g_ctx.show_fps = true;
+	g_ctx.font = GetFontDefault();
+	g_ctx.h1_size = 20;
+	g_ctx.h1_spacing = 5;
 
 	// GAME LOOP
 	// -----------------------------------------------------------------------------------
 	while (!WindowShouldClose())
 	{
+        g_ctx.current_screen = g_ctx.next_screen;
+
 		// GAME LOGIC
 		// -------------------------------------------------------------------------------
 		if(IsKeyPressed(KEY_TAB))
-			show_fps = !show_fps;
-		if(IsWindowResized())
+			g_ctx.show_fps ^= 1;
+
+		switch(g_ctx.current_screen)
 		{
-			title_text_pos = TextPosCenter(&font, title_text, title_text_font_size, title_text_spacing, GetScreenWidth(), GetScreenHeight());
-		}
-		switch(current_screen)
-		{
-			case TITLE:
-			{
-				if(IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
-					current_screen = MENU;
-			}break;
+			case TITLE: screen_title_update(); break;
+			case MENU: screen_menu_update(); break;
+			case GAMEPLAY: screen_gameplay_update(); break;
+			case ENDING: screen_ending_update(); break;
+			default: break;
+	    }
 
-			case MENU:
-			{
-
-			}break;
-
-			case GAMEPLAY:
-			{
-				switch(gameplay_state)
-				{
-					case GAMEPLAY_INIT:
-					{
-				
-					}break;
-					case GAMEPLAY_PLAY:
-					{
-
-					}break;
-					case GAMEPLAY_DEINIT:
-					{
-
-					}break;
-					default: break;
-				}
-			}break;
-
-			case ENDING:
-			{
-
-			}break;
-			default:break;
-	}
-
-	// RENDERRING
-	// -------------------------------------------------------------------------------
+        // RENDERRING
+        // -------------------------------------------------------------------------------
 		BeginDrawing();
 		{
 			ClearBackground(RAYWHITE);
-
-			if(show_fps)
-					DrawFPS(5, 0);
-
-			switch(current_screen)
+            
+			switch(g_ctx.current_screen)
 			{
-				case TITLE:
-				{
-					DrawTextEx(font, title_text, title_text_pos, title_text_font_size, title_text_spacing, DARKPURPLE);
-				}break;
-
-				case MENU:
-				{
-					DrawText("This is menu screen", 100, 100, 20, RED);
-				}break;
-
-				case GAMEPLAY:
-				{
-
-				}break;
-
-				case ENDING:
-				{
-
-				}break;
-				default:break;
+				case TITLE: screen_title_draw(); break;
+				case MENU: screen_menu_draw(); break;
+				case GAMEPLAY: screen_gameplay_draw(); break;
+				case ENDING: screen_ending_draw(); break;
+				default: break;
 			}
-		}	
+
+			if(g_ctx.show_fps)
+				DrawFPS(5, 0);
+		}
 		EndDrawing();
     }
 
     // DE INITIALIZATION
     // -----------------------------------------------------------------------------------
+    screen_title_deinit();
+    screen_menu_deinit();
+    screen_gameplay_deinit();
+    screen_ending_deinit();
+
     CloseWindow();
 }
