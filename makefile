@@ -12,7 +12,7 @@ LIBDIR= lib
 WARNINGS= -W -Wall -Wextra -Wpedantic -Wdouble-promotion -Wstrict-prototypes -Wshadow
 CFLAGS= $(WARNINGS) -std=c11 -MMD -MP -march=native
 LDFLAGS= -L ./$(LIBDIR) -Wl,-rpath='$$ORIGIN' #rpath tells where to find .so files to the binaru output
-LIBFLAGS= -lraylib
+LIBFLAGS= -lraylib -lm
 INCFLAGS= -I ./$(INCDIR)
 
 SRC= $(wildcard ./$(SRCDIR)/*.c)
