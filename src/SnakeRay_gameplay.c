@@ -18,6 +18,7 @@ void screen_gameplay_init(void)
 void screen_gameplay_update(void)
 {
     double elapsed_s = GetTime() - last_time_s;
+    bool toto = false;
 
     if(!inited)
         screen_gameplay_init();
@@ -39,8 +40,10 @@ void screen_gameplay_update(void)
     }
 
     if(elapsed_s >= time_step_s){
-        Snake_step(snake);
-        rng_vec2(&fruit, (Vector2){GetScreenWidth(), GetScreenHeight()});
+        if(snake_is_on_fruit())
+            Snake_grow(snake);
+        else
+            Snake_step(snake);
 
         last_time_s = GetTime();
     }
@@ -63,5 +66,5 @@ void screen_gameplay_deinit(void)
 
 bool is_fruit_valid(void)
 {
-
+    return false;
 }
