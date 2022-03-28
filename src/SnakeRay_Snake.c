@@ -94,3 +94,20 @@ void Snake_draw(Snake_st *me)
     }
 }
 
+bool Snake_is_on_snake(Snake_st *me, Vector2 fruit)
+{
+    if(me->head.x == fruit.x && me->head.y == fruit.y)
+        return true;
+
+    for(size_t i=0 ; i<me->body_size ; i++){
+        if(me->body[i].x == fruit.x && me->body[i].y == fruit.y)
+            return true;
+    }
+
+    return false;
+}
+
+Vector2 Snake_get_head_pos(Snake_st *me)
+{
+    return (Vector2){me->head.x, me->head.y};
+}

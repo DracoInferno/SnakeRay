@@ -64,7 +64,8 @@ void screen_gameplay_update(void);
 void screen_gameplay_draw(void);
 void screen_gameplay_deinit(void);
 
-bool is_fruit_valid(void);
+void make_valid_fruit(void);
+bool is_snake_on_fruit(void);
 
 // < ENDING > SCREEN
 // -------------------------------------------------------------------------

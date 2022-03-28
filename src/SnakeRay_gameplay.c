@@ -8,9 +8,11 @@ static double last_time_s = 0.0;
 
 void screen_gameplay_init(void)
 {
+	ClearWindowState(FLAG_WINDOW_RESIZABLE);
+
     snake = Snake_ctor((Vector2){GetScreenWidth()/2, GetScreenHeight()/2}, 10, RED, BLUE);
-    srand(time(NULL));
-    rng_vec2(&fruit, (Vector2){GetScreenWidth(), GetScreenHeight()});
+    make_valid_fruit();
+
     last_time_s = GetTime();
     inited = true;
 }
@@ -18,7 +20,6 @@ void screen_gameplay_init(void)
 void screen_gameplay_update(void)
 {
     double elapsed_s = GetTime() - last_time_s;
-    bool toto = false;
 
     if(!inited)
         screen_gameplay_init();
@@ -40,8 +41,10 @@ void screen_gameplay_update(void)
     }
 
     if(elapsed_s >= time_step_s){
-        if(snake_is_on_fruit())
+        if(is_snake_on_fruit()){
             Snake_grow(snake);
+            make_valid_fruit();
+        }
         else
             Snake_step(snake);
 
@@ -54,7 +57,7 @@ void screen_gameplay_update(void)
 void screen_gameplay_draw(void)
 {
     Snake_draw(snake);
-    //DrawRectangle(fruit.x, fruit.y, 5, 5, PURPLE);
+    DrawRectangle(fruit.x, fruit.y, 10, 10, PURPLE);
 }
 void screen_gameplay_deinit(void)
 {
@@ -62,9 +65,19 @@ void screen_gameplay_deinit(void)
         Snake_dtor(snake);
         inited = false;
     }
+	SetWindowState(FLAG_WINDOW_RESIZABLE);
 }
 
-bool is_fruit_valid(void)
+void make_valid_fruit(void)
 {
-    return false;
+    srand(time(NULL));
+    do{
+        rng_vec2(&fruit, (Vector2){GetScreenWidth(), GetScreenHeight()});
+    }while(Snake_is_on_snake(snake, fruit));
+}
+
+bool is_snake_on_fruit()
+{
+    Vector2 snake_head = Snake_get_head_pos(snake);
+    return (fruit.x == snake_head.x && fruit.y == snake_head.y);
 }
