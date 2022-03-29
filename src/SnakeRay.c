@@ -34,7 +34,7 @@ void SnakeRay(int argc, char *argv[])
 			case TITLE: screen_title_update(); break;
 			case MENU: screen_menu_update(); break;
 			case GAMEPLAY: screen_gameplay_update(); break;
-			case ENDING: screen_ending_update(); break;
+			case GAMEOVER: screen_gameover_update(); break;
 			default: break;
 	    }
 
@@ -49,7 +49,7 @@ void SnakeRay(int argc, char *argv[])
 				case TITLE: screen_title_draw(); break;
 				case MENU: screen_menu_draw(); break;
 				case GAMEPLAY: screen_gameplay_draw(); break;
-				case ENDING: screen_ending_draw(); break;
+				case GAMEOVER: screen_gameover_draw(); break;
 				default: break;
 			}
 
@@ -64,7 +64,7 @@ void SnakeRay(int argc, char *argv[])
     screen_title_deinit();
     screen_menu_deinit();
     screen_gameplay_deinit();
-    screen_ending_deinit();
+    screen_gameover_deinit();
 
     CloseWindow();
 }

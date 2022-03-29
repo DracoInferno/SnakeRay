@@ -19,7 +19,7 @@ void screen_menu_update(void)
 }
 void screen_menu_draw(void)
 {
-    DrawText("This is menu screen", 100, 100, 20, RED);
+    DrawText("MENU", 100, 100, 20, RED);
     DrawRectangle((GetScreenWidth()/2)*(1 + sin(GetTime())), 200, 20, 20, GREEN);
 }
 void screen_menu_deinit(void)

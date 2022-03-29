@@ -3,6 +3,16 @@
 static bool inited = false;
 static Snake_st *snake = NULL;
 static Vector2 fruit = {0.0, 0.0};
+// static const float UNIT = 15.0;
+// Margins computed from screen dimensions, greater or equal than MIN_MARGIN
+static float real_w_margin = 0;
+static float real_h_margin = 0;
+static int row_nb = 0;
+static int col_nb = 0;
+// "Physics board"
+static Rectangle board = {0};
+// Board for drawing, taking boder wifth into account
+static Rectangle drawing_board = {0};
 static double time_step_s = 0.250;
 static double last_time_s = 0.0;
 
@@ -10,7 +20,30 @@ void screen_gameplay_init(void)
 {
 	ClearWindowState(FLAG_WINDOW_RESIZABLE);
 
-    snake = Snake_ctor((Vector2){GetScreenWidth()/2, GetScreenHeight()/2}, 10, RED, BLUE);
+    // Setup board
+    row_nb = floorf((GetScreenWidth() - 2*MIN_MARGIN)/UNIT);
+    board.width = row_nb*UNIT;
+    real_w_margin = (GetScreenWidth() - board.width)/2.0;
+    board.x = real_w_margin;
+    col_nb = floorf((GetScreenHeight() - 2*MIN_MARGIN)/UNIT);
+    board.height = col_nb*UNIT;
+    real_h_margin = (GetScreenHeight() - board.height)/2.0;
+    board.y = real_h_margin;
+
+    drawing_board.x = board.x - BOARD_LINE_W;
+    drawing_board.y = board.y - BOARD_LINE_W;
+    drawing_board.width = board.width + 2*BOARD_LINE_W;
+    drawing_board.height = board.height + 2*BOARD_LINE_W;
+
+    // Spawn Snake in the board center
+    snake = Snake_ctor(
+        (Rectangle){
+            board.x + UNIT*floorf(row_nb/2),
+            board.y + UNIT*floorf(col_nb/2),
+            UNIT, UNIT
+        },
+        RED, BLUE
+    );
     make_valid_fruit();
 
     last_time_s = GetTime();
@@ -24,19 +57,16 @@ void screen_gameplay_update(void)
     if(!inited)
         screen_gameplay_init();
 	
-    if(IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
-        g_ctx.next_screen = ENDING;
-    
     if(IsKeyPressed(KEY_UP)){
         Snake_turn(snake, (Vector2){0, -1});
     }
-    else if(IsKeyPressed(KEY_DOWN)){
+    if(IsKeyPressed(KEY_DOWN)){
         Snake_turn(snake, (Vector2){0, 1});
     }
-    else if(IsKeyPressed(KEY_LEFT)){
+    if(IsKeyPressed(KEY_LEFT)){
         Snake_turn(snake, (Vector2){-1, 0});
     }
-    else if(IsKeyPressed(KEY_RIGHT)){
+    if(IsKeyPressed(KEY_RIGHT)){
         Snake_turn(snake, (Vector2){1, 0});
     }
 
@@ -45,9 +75,11 @@ void screen_gameplay_update(void)
             Snake_grow(snake);
             make_valid_fruit();
         }
-        else
+        else{
             Snake_step(snake);
-
+            if(Snake_bite_itself(snake))
+                g_ctx.next_screen = GAMEOVER;
+        }
         last_time_s = GetTime();
     }
 
@@ -56,8 +88,11 @@ void screen_gameplay_update(void)
 }
 void screen_gameplay_draw(void)
 {
-    Snake_draw(snake);
-    DrawRectangle(fruit.x, fruit.y, 10, 10, PURPLE);
+    if(inited){
+        DrawRectangleLinesEx(drawing_board, 5, BLACK);
+        Snake_draw(snake);
+        DrawRectangle(fruit.x, fruit.y, UNIT, UNIT, PURPLE);
+    }
 }
 void screen_gameplay_deinit(void)
 {
@@ -72,7 +107,8 @@ void make_valid_fruit(void)
 {
     srand(time(NULL));
     do{
-        rng_vec2(&fruit, (Vector2){GetScreenWidth(), GetScreenHeight()});
+        fruit.x = GetRandomValue(0, row_nb-1)*UNIT + real_w_margin;
+        fruit.y = GetRandomValue(0, col_nb-1)*UNIT + real_h_margin;
     }while(Snake_is_on_snake(snake, fruit));
 }
 

@@ -1,13 +1,13 @@
 #include "SnakeRay.h"
 
-void rng_vec2(Vector2 *dest, Vector2 bounds)
+void rng_vec2(Vector2 *dest, Rectangle bounds)
 {
     assert(dest);
 
     // srand(time(NULL));
 
-    float x = floor((bounds.x * rand())/RAND_MAX);
-    float y = floor((bounds.y * rand())/RAND_MAX);
+    float x = GetRandomValue(bounds.x, bounds.x + bounds.width);
+    float y = GetRandomValue(bounds.y, bounds.y + bounds.height);
 
     dest->x = x;
     dest->y = y;

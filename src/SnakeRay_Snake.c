@@ -1,6 +1,6 @@
 #include "SnakeRay_Snake.h"
 
-Snake_st* Snake_ctor(Vector2 pos, size_t width, Color h_color, Color b_color)
+Snake_st* Snake_ctor(Rectangle size_n_pos, Color h_color, Color b_color)
 {
     Snake_st *me = MemAlloc(sizeof(*me));
     if(!me){
@@ -10,7 +10,7 @@ Snake_st* Snake_ctor(Vector2 pos, size_t width, Color h_color, Color b_color)
 
     // Always to the top
     me->direction = (Vector2){0.0, -1.0};
-    me->head = (Rectangle){pos.x, pos.y, width, width};
+    me->head = size_n_pos;
     me->head_color = h_color;
     me->body_color = b_color;
     // No body at creation
@@ -92,6 +92,16 @@ void Snake_draw(Snake_st *me)
     for(size_t i=0 ; i<me->body_size ; i++){
         DrawRectangleRec(me->body[i], me->body_color);
     }
+}
+
+bool Snake_bite_itself(Snake_st *me)
+{
+    for(size_t i=0 ; i<me->body_size ; i++){
+        if(me->head.x == me->body[i].x && me->head.y == me->body[i].y)
+            return true;
+    }
+
+    return false;
 }
 
 bool Snake_is_on_snake(Snake_st *me, Vector2 fruit)

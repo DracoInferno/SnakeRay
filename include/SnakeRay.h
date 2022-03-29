@@ -11,13 +11,16 @@
 
 #define WINDOW_W 480
 #define WINDOW_H 360
+#define MIN_MARGIN 20.0
+#define UNIT 15.0
+#define BOARD_LINE_W 5
 
 typedef enum GameScreen_st{
     NONE,
     TITLE,
     MENU,
     GAMEPLAY,
-    ENDING
+    GAMEOVER
 }GameScreen_st;
 
 typedef enum Gameplay_st{
@@ -67,15 +70,15 @@ void screen_gameplay_deinit(void);
 void make_valid_fruit(void);
 bool is_snake_on_fruit(void);
 
-// < ENDING > SCREEN
+// < GAMEOVER > SCREEN
 // -------------------------------------------------------------------------
-void screen_ending_init(void);
-void screen_ending_update(void);
-void screen_ending_draw(void);
-void screen_ending_deinit(void);
+void screen_gameover_init(void);
+void screen_gameover_update(void);
+void screen_gameover_draw(void);
+void screen_gameover_deinit(void);
 
 // Utilities
 // -------------------------------------------------------------------------
-void rng_vec2(Vector2 *dest, Vector2 bounds);
+void rng_vec2(Vector2 *dest, Rectangle bounds);
 
 #endif //SNAKERAY_H
