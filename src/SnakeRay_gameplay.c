@@ -13,6 +13,8 @@ static int col_nb = 0;
 static Rectangle board = {0};
 // Board for drawing, taking boder wifth into account
 static Rectangle drawing_board = {0};
+static uint32_t score = 0;
+static sds score_str;
 static double time_step_s = 0.250;
 static double last_time_s = 0.0;
 
@@ -45,7 +47,8 @@ void screen_gameplay_init(void)
         RED, BLUE
     );
     make_valid_fruit();
-
+    score = 0;
+    score_str = sdsnew("Score: 0");
     last_time_s = GetTime();
     inited = true;
 }
@@ -73,12 +76,15 @@ void screen_gameplay_update(void)
     if(elapsed_s >= time_step_s){
         if(is_snake_on_fruit()){
             Snake_grow(snake);
+            score++;
+            score_str = sdscatprintf(sdsempty(), "Score: %d", score);
             make_valid_fruit();
         }
         else{
             Snake_step(snake);
-            if(Snake_bite_itself(snake))
+            if(Snake_bite_itself(snake) || Snake_is_oob(snake, board))
                 g_ctx.next_screen = GAMEOVER;
+
         }
         last_time_s = GetTime();
     }
@@ -92,6 +98,7 @@ void screen_gameplay_draw(void)
         DrawRectangleLinesEx(drawing_board, 5, BLACK);
         Snake_draw(snake);
         DrawRectangle(fruit.x, fruit.y, UNIT, UNIT, PURPLE);
+        DrawText(score_str, 50, 0, 20, BLACK);
     }
 }
 void screen_gameplay_deinit(void)
@@ -100,6 +107,7 @@ void screen_gameplay_deinit(void)
         Snake_dtor(snake);
         inited = false;
     }
+    sdsfree(score_str);
 	SetWindowState(FLAG_WINDOW_RESIZABLE);
 }
 

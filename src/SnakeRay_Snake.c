@@ -94,16 +94,6 @@ void Snake_draw(Snake_st *me)
     }
 }
 
-bool Snake_bite_itself(Snake_st *me)
-{
-    for(size_t i=0 ; i<me->body_size ; i++){
-        if(me->head.x == me->body[i].x && me->head.y == me->body[i].y)
-            return true;
-    }
-
-    return false;
-}
-
 bool Snake_is_on_snake(Snake_st *me, Vector2 fruit)
 {
     if(me->head.x == fruit.x && me->head.y == fruit.y)
@@ -120,4 +110,19 @@ bool Snake_is_on_snake(Snake_st *me, Vector2 fruit)
 Vector2 Snake_get_head_pos(Snake_st *me)
 {
     return (Vector2){me->head.x, me->head.y};
+}
+
+bool Snake_bite_itself(Snake_st *me)
+{
+    for(size_t i=0 ; i<me->body_size ; i++){
+        if(me->head.x == me->body[i].x && me->head.y == me->body[i].y)
+            return true;
+    }
+
+    return false;
+}
+
+bool Snake_is_oob(Snake_st *me, Rectangle bounds)
+{
+    return !CheckCollisionRecs(me->head, bounds);
 }

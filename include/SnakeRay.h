@@ -4,8 +4,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <time.h>
 #include <raylib.h>
+#include "sds.h"
 #include "RayLibText.h"
 #include "SnakeRay_Snake.h"
 
