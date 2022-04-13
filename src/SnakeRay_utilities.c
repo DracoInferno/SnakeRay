@@ -12,3 +12,8 @@ void rng_vec2(Vector2 *dest, Rectangle bounds)
     dest->x = x;
     dest->y = y;
 }
+
+double compute_time_step(uint32_t score)
+{
+    return T0 * exp(-0.01*(double)score);
+}

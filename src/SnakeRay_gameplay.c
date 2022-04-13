@@ -15,8 +15,8 @@ static Rectangle board = {0};
 static Rectangle drawing_board = {0};
 static uint32_t score = 0;
 static sds score_str;
-static double time_step_s = 0.250;
-static double last_time_s = 0.0;
+static double time_step_s;
+static double last_time_s;
 
 void screen_gameplay_init(void)
 {
@@ -44,10 +44,11 @@ void screen_gameplay_init(void)
             board.y + UNIT*floorf(col_nb/2),
             UNIT, UNIT
         },
-        RED, BLUE
+        RED, RED
     );
     make_valid_fruit();
     score = 0;
+    time_step_s = compute_time_step(score);
     score_str = sdsnew("Score: 0");
     last_time_s = GetTime();
     inited = true;
@@ -79,6 +80,7 @@ void screen_gameplay_update(void)
             score++;
             score_str = sdscatprintf(sdsempty(), "Score: %d", score);
             make_valid_fruit();
+            time_step_s = compute_time_step(score);
         }
         else{
             Snake_step(snake);

@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <time.h>
+#include <math.h>
 #include <raylib.h>
 #include "sds.h"
 #include "RayLibText.h"
@@ -16,6 +17,7 @@
 #define MIN_MARGIN 20.0
 #define UNIT 15.0
 #define BOARD_LINE_W 5
+#define T0 0.25
 
 typedef enum GameScreen_st{
     NONE,
@@ -82,5 +84,6 @@ void screen_gameover_deinit(void);
 // Utilities
 // -------------------------------------------------------------------------
 void rng_vec2(Vector2 *dest, Rectangle bounds);
+double compute_time_step(uint32_t score);
 
 #endif //SNAKERAY_H
