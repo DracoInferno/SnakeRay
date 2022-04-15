@@ -30,54 +30,44 @@ void Snake_dtor(Snake_st *me)
     MemFree(me);
 }
 
-void Snake_step(Snake_st *me)
-{
-    assert(me);
-
-    if(me->body_size > 0){
-        // Step body position from end to second to last before head
-        for(size_t i=0 ; i<me->body_size-1 ; i++){
-            me->body[i] = me->body[i+1];
-        }
-        // Step the closest to head (which is the last in the array)
-        if(me->body)
-            me->body[me->body_size-1] = me->head;
-    }
-
-    // Step head
-    me->head.x += me->direction.x * me->head.width;
-    me->head.y += me->direction.y * me->head.width;
-}
-
-void Snake_turn(Snake_st *me, Vector2 new_direction)
+void Snake_update(Snake_st *me, Vector2 direction, bool grow)
 {
     assert(me);
 
     // Forbids 180° turn
-    if((new_direction.x * -1.0f) != me->direction.x &&
-       (new_direction.y * -1.0f) != me->direction.y){
-        me->direction = new_direction;
+    if((direction.x * -1.0f) != me->direction.x &&
+       (direction.y * -1.0f) != me->direction.y){
+        me->direction = direction;
     }
-}
 
-void Snake_grow(Snake_st *me)
-{
-    assert(me);
+    if(grow){
+        // Grow body array
+        if(me->body_size >= me->max_size){
+            me->max_size += 30;
+            me->body = MemRealloc(me->body, sizeof(*(me->body)) * me->max_size);
+            if(!me->body){
+                TraceLog(LOG_FATAL, "Error allocating Snake_st body!");
+                exit(1);
+            }
+        }
 
-    // Grow body array
-    if(me->body_size >= me->max_size){
-        me->max_size += 30;
-        me->body = MemRealloc(me->body, sizeof(*(me->body)) * me->max_size);
-        if(!me->body){
-            TraceLog(LOG_FATAL, "Error allocating Snake_st body!");
-            exit(1);
+        // Add new body segment at the end
+        me->body[me->body_size++] = me->head;
+    }
+    else{
+        // Move body
+        if(me->body_size > 0){
+            // Step body position from end to second to last before head
+            for(size_t i=0 ; i<me->body_size-1 ; i++){
+                me->body[i] = me->body[i+1];
+            }
+            // Step the closest to head (which is the last in the array)
+            if(me->body)
+                me->body[me->body_size-1] = me->head;
         }
     }
 
-    // Add new body segment at the end
-    me->body[me->body_size++] = me->head;
-
-    // Step head
+    // Move head
     me->head.x += me->direction.x * me->head.width;
     me->head.y += me->direction.y * me->head.width;
 }

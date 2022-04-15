@@ -19,10 +19,7 @@ typedef struct Snake{
 
 Snake_st* Snake_ctor(Rectangle size_n_pos, Color h_color, Color b_color);
 void Snake_dtor(Snake_st *me);
-
-void Snake_step(Snake_st *me);
-void Snake_turn(Snake_st *me, Vector2 new_direction);
-void Snake_grow(Snake_st *me);
+void Snake_update(Snake_st *me, Vector2 direction, bool grow);
 void Snake_draw(Snake_st *me);
 
 bool Snake_is_on_snake(Snake_st *me, Vector2 fruit);
