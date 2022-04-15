@@ -57,33 +57,34 @@ void screen_gameplay_init(void)
 void screen_gameplay_update(void)
 {
     double elapsed_s = GetTime() - last_time_s;
+    static Vector2 direction = {0.0, -1.0};
 
     if(!inited)
         screen_gameplay_init();
 	
     if(IsKeyPressed(KEY_UP)){
-        Snake_turn(snake, (Vector2){0, -1});
+        direction = (Vector2){0.0, -1.0};
     }
     if(IsKeyPressed(KEY_DOWN)){
-        Snake_turn(snake, (Vector2){0, 1});
+        direction = (Vector2){0.0, 1.0};
     }
     if(IsKeyPressed(KEY_LEFT)){
-        Snake_turn(snake, (Vector2){-1, 0});
+        direction = (Vector2){-1.0, 0.0};
     }
     if(IsKeyPressed(KEY_RIGHT)){
-        Snake_turn(snake, (Vector2){1, 0});
+        direction = (Vector2){1.0, 0.0};
     }
 
     if(elapsed_s >= time_step_s){
         if(is_snake_on_fruit()){
-            Snake_grow(snake);
+            Snake_update(snake, direction, true);
             score++;
             score_str = sdscatprintf(sdsempty(), "Score: %d", score);
             make_valid_fruit();
             time_step_s = compute_time_step(score);
         }
         else{
-            Snake_step(snake);
+            Snake_update(snake, direction, false);
             if(Snake_bite_itself(snake) || Snake_is_oob(snake, board))
                 g_ctx.next_screen = GAMEOVER;
 
@@ -98,8 +99,8 @@ void screen_gameplay_draw(void)
 {
     if(inited){
         DrawRectangleLinesEx(drawing_board, 5, BLACK);
-        Snake_draw(snake);
         DrawRectangle(fruit.x, fruit.y, UNIT, UNIT, PURPLE);
+        Snake_draw(snake);
         DrawText(score_str, 50, 0, 20, BLACK);
     }
 }
@@ -107,9 +108,9 @@ void screen_gameplay_deinit(void)
 {
     if(inited){
         Snake_dtor(snake);
+        sdsfree(score_str);
         inited = false;
     }
-    sdsfree(score_str);
 	SetWindowState(FLAG_WINDOW_RESIZABLE);
 }
 
