@@ -15,5 +15,10 @@ void rng_vec2(Vector2 *dest, Rectangle bounds)
 
 double compute_time_step(uint32_t score)
 {
-    return T0 * exp(-0.01*(double)score);
+    return T0 * expf(-0.01*(double)score);
+}
+
+int obj_pos_screen_center(float length)
+{
+    return (GetScreenWidth() - length)/2;
 }

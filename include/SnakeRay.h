@@ -11,13 +11,16 @@
 #include "sds.h"
 #include "RayLibText.h"
 #include "SnakeRay_Snake.h"
+#include "raygui.h"
 
 #define WINDOW_W 480
 #define WINDOW_H 360
-#define MIN_MARGIN 20.0
-#define UNIT 15.0
+#define MIN_MARGIN 25.0f
+#define UNIT 15.0f
 #define BOARD_LINE_W 5
-#define T0 0.25
+#define T0 0.25f
+#define SCORE_SIZE 20
+#define TITLE_SIZE 25
 
 typedef enum GameScreen_st{
     NONE,
@@ -85,5 +88,6 @@ void screen_gameover_deinit(void);
 // -------------------------------------------------------------------------
 void rng_vec2(Vector2 *dest, Rectangle bounds);
 double compute_time_step(uint32_t score);
+int obj_pos_screen_center(float length);
 
 #endif //SNAKERAY_H

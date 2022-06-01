@@ -11,8 +11,9 @@ static int row_nb = 0;
 static int col_nb = 0;
 // "Physics board"
 static Rectangle board = {0};
-// Board for drawing, taking boder wifth into account
+// Board for drawing, taking boder width into account
 static Rectangle drawing_board = {0};
+static Vector2 score_pos = {0};
 static uint32_t score = 0;
 static sds score_str;
 static double time_step_s;
@@ -25,11 +26,11 @@ void screen_gameplay_init(void)
     // Setup board
     row_nb = floorf((GetScreenWidth() - 2*MIN_MARGIN)/UNIT);
     board.width = row_nb*UNIT;
-    real_w_margin = (GetScreenWidth() - board.width)/2.0;
+    real_w_margin = (GetScreenWidth() - board.width)/2.0f;
     board.x = real_w_margin;
     col_nb = floorf((GetScreenHeight() - 2*MIN_MARGIN)/UNIT);
     board.height = col_nb*UNIT;
-    real_h_margin = (GetScreenHeight() - board.height)/2.0;
+    real_h_margin = (GetScreenHeight() - board.height)/2.0f;
     board.y = real_h_margin;
 
     drawing_board.x = board.x - BOARD_LINE_W;
@@ -47,9 +48,14 @@ void screen_gameplay_init(void)
         RED, RED
     );
     make_valid_fruit();
+
+    // Score Management
     score = 0;
-    time_step_s = compute_time_step(score);
     score_str = sdsnew("Score: 0");
+    score_pos.x = GetScreenWidth() - MeasureText(score_str, SCORE_SIZE) - 5;
+    score_pos.y = 0;
+    time_step_s = compute_time_step(score);
+
     last_time_s = GetTime();
     inited = true;
 }
@@ -80,6 +86,7 @@ void screen_gameplay_update(void)
             Snake_update(snake, direction, true);
             score++;
             score_str = sdscatprintf(sdsempty(), "Score: %d", score);
+            score_pos.x = GetScreenWidth() - MeasureText(score_str, SCORE_SIZE) - 5;
             make_valid_fruit();
             time_step_s = compute_time_step(score);
         }
@@ -101,7 +108,7 @@ void screen_gameplay_draw(void)
         DrawRectangleLinesEx(drawing_board, 5, BLACK);
         DrawRectangle(fruit.x, fruit.y, UNIT, UNIT, PURPLE);
         Snake_draw(snake);
-        DrawText(score_str, 50, 0, 20, BLACK);
+        DrawText(score_str, score_pos.x, score_pos.y, 20, BLACK);
     }
 }
 void screen_gameplay_deinit(void)

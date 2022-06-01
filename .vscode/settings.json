@@ -4,6 +4,7 @@
         "stdint.h": "c",
         "sds.h": "c",
         "time.h": "c",
-        "math.h": "c"
+        "math.h": "c",
+        "raygui.h": "c"
     }
 }

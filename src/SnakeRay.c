@@ -1,4 +1,7 @@
 #include "SnakeRay.h"
+#define RAYGUI_IMPLEMENTATION
+#include "raygui.h"
+#undef RAYGUI_IMPLEMENTATION
 
 GlobalContext_st g_ctx;
 
